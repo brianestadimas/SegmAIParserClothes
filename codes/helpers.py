@@ -5,6 +5,22 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 from torchvision import transforms
+import torch, torchvision
+from torch import nn
+
+
+class FocalLoss(nn.Module):
+	def __init__(self, gamma=2, alpha=0.25):
+		super(FocalLoss, self).__init__()
+		self.gamma = gamma
+		self.alpha = alpha
+	def __call__(self, input, target):
+		if len(target.shape) == 1:
+			target = torch.nn.functional.one_hot(target, num_classes=64)
+		loss = torchvision.ops.sigmoid_focal_loss(input, target.float(), alpha=self.alpha, gamma=self.gamma,
+												  reduction='mean')
+		return loss
+
 
 def pad_to(x, stride):
     h, w = x.shape[-2:]
