@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 from torchvision import transforms
 import torch, torchvision
 from torch import nn
-
+from PIL import Image
 
 class FocalLoss(nn.Module):
 	def __init__(self, gamma=2, alpha=0.25):
@@ -118,6 +118,14 @@ def tensor_to_numpy(tensor):
     np_image = np.transpose(np_image, (1, 2, 0))
     return np_image
 
+def save_image(tensor, filepath):
+    """
+    Save a torch tensor as an image.
+    """
+    img = tensor.detach().cpu().numpy()
+    img = img.transpose(1, 2, 0)  # Convert from CHW to HWC format for PIL
+    img = ((img + 1) * 0.5 * 255).astype('uint8')  # Scale from [-1, 1] to [0, 255]
+    Image.fromarray(img).save(filepath)
 
 class ScaleToCenterTransform:
     """Scales the image towards the center and crops it back to the output size."""
