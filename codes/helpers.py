@@ -118,7 +118,7 @@ def tensor_to_numpy(tensor):
     np_image = np.transpose(np_image, (1, 2, 0))
     return np_image
 
-def save_image(tensor, filepath):
+def save_image_helper(tensor, filepath):
     """
     Save a torch tensor as an image.
     """
