@@ -48,7 +48,7 @@ class DecoderBlock(nn.Module):
         return x
 
 class SegNet(nn.Module): 
-    def __init__(self, in_channels=3, out_channels=1, features=64) -> None:
+    def __init__(self, in_channels=3, out_channels=3, features=64) -> None:
         super(SegNet, self).__init__()
 
         # Encoder
@@ -66,6 +66,8 @@ class SegNet(nn.Module):
         self.dec1 = DecoderBlock(features * 4, features * 2, depth=3)
         self.dec2 = DecoderBlock(features * 2, features)
         self.dec3 = DecoderBlock(features, out_channels, classification=True) # No activation
+        
+        self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
         # encoder
@@ -84,5 +86,6 @@ class SegNet(nn.Module):
         d2 = self.dec2(d1, ind1)
 
         # classification layer
-        output = self.dec3(d2, ind0)  
+        output = self.dec3(d2, ind0)
+        output = self.sigmoid(output)  
         return output
